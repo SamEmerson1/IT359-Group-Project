@@ -1,0 +1,4 @@
+flask
+requests
+# For the AI explanation layer (auditor/ai_report.py):
+openai
