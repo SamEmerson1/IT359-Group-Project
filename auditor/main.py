@@ -15,7 +15,11 @@ from auditor import ai_report, report
 from auditor.scoring import score, grade
 
 
-def run_audit(target: str):
+def run_audit(target: str, db: str = None):
+    # Point the white-box storage check at a specific users.db (e.g. a copy
+    # pulled from the app host when the auditor runs on a separate machine).
+    from auditor.checks import storage
+    storage.DB_OVERRIDE = db
     findings = []
     for check in ALL_CHECKS:
         try:
@@ -48,10 +52,13 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Authentication security auditor")
     ap.add_argument("--target", required=True, help="URL of OUR target app")
     ap.add_argument("--out", default="report.html", help="output HTML report path")
+    ap.add_argument("--db", default=None,
+                    help="path to the app's users.db for the white-box storage "
+                         "check (use when the auditor runs on a different host)")
     args = ap.parse_args(argv)
 
     print(f"Auditing {args.target} ...")
-    findings = run_audit(args.target)
+    findings = run_audit(args.target, db=args.db)
 
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(report.render_html(findings))

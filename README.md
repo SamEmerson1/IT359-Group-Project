@@ -69,6 +69,20 @@ python -m auditor.main --target http://127.0.0.1:5000 --out report.html
 
 Seeded logins for testing: `alice / password123`, `bob / letmein`, `admin / admin`.
 
+### Running the auditor from a separate host (e.g. Kali)
+
+For the realistic setup — app on Windows, auditor on Kali:
+
+```bash
+python -m auditor.main --target http://<app-host-ip>:5000 --db ./users.db --out report.html
+```
+
+- Point `--target` at the app host's IP (and open port 5000 in its firewall).
+- Six checks run over the network. The storage check is **white-box** — it
+  reads the database directly — so copy the app's `users.db` to the auditor
+  host and pass it with `--db` (or set the `AUDITOR_DB` env var). Re-copy it
+  whenever you flip `SECURE_MODE`, since the file is rewritten on each restart.
+
 ## How the code is organized
 
 - **`core.py`** defines a `Finding` — the single shape every check returns
