@@ -118,8 +118,8 @@ def set_password(username: str, password: str):
 # ---------- templates ----------
 NAV = "<p><a href='/'>Login</a> | <a href='/register'>Register</a> | <a href='/reset'>Forgot password</a></p>"
 
-LOGIN_PAGE = """<!doctype html><title>Lab Login</title>
-<h2>IT 359 Lab - Login</h2>""" + NAV + """
+LOGIN_PAGE = """<!doctype html><title>Northstar Commerce Login</title>
+<h2>Northstar Commerce Account Login</h2>""" + NAV + """
 <form method="post">
   <p>Username: <input name="username"></p>
   <p>Password: <input name="password" type="password"></p>

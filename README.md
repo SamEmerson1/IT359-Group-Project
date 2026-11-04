@@ -1,10 +1,12 @@
-# Credential & Authentication Security Auditor
+# CredentialGuard
 
-**IT 359-002 — Group 5** · Prof. Dmitry Zhdanov
+**Authentication Security Auditor · Sentinel Security Solutions** · IT 359-002 Group 5 · Prof. Dmitry Zhdanov
 
-A Python tool that audits a web app's login and account system for common
-authentication weaknesses and produces an overall **authentication security
-score** with plain-language, AI-assisted remediation notes.
+CredentialGuard is a Python tool that audits a web app's login and account
+system for common authentication weaknesses and produces an overall
+**authentication security score** with plain-language, AI-assisted remediation
+notes. The included demo target app stands in for a fictional client site
+(Northstar Commerce) for testing.
 
 This repo holds the **code** for the project only.
 

@@ -41,7 +41,7 @@ def render_html(findings: list[Finding]) -> str:
     ts = datetime.now().strftime("%Y-%m-%d %H:%M")
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Authentication Security Report</title>
+<title>CredentialGuard: Authentication Security Report</title>
 <style>
   body {{ font-family: system-ui, sans-serif; max-width: 860px; margin: 2rem auto;
           padding: 0 1rem; color: #222; line-height: 1.45; }}
@@ -65,6 +65,6 @@ def render_html(findings: list[Finding]) -> str:
     <p>Authentication security score &middot; {failed} of {len(findings)} checks failed &middot; generated {ts}</p>
   </div>
   {cards}
-  <footer>Credential &amp; Authentication Security Auditor &middot; IT 359 Group 5.
+  <footer>CredentialGuard &middot; Sentinel Security Solutions &middot; IT 359 Group 5.
   Authorized lab testing only.</footer>
 </body></html>"""

@@ -49,7 +49,7 @@ def print_summary(findings):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description="Authentication security auditor")
+    ap = argparse.ArgumentParser(description="CredentialGuard: authentication security auditor")
     ap.add_argument("--target", required=True, help="URL of OUR target app")
     ap.add_argument("--out", default="report.html", help="output HTML report path")
     ap.add_argument("--db", default=None,
@@ -57,6 +57,7 @@ def main(argv=None):
                          "check (use when the auditor runs on a different host)")
     args = ap.parse_args(argv)
 
+    print("CredentialGuard - Sentinel Security Solutions")
     print(f"Auditing {args.target} ...")
     findings = run_audit(args.target, db=args.db)
 
