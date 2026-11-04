@@ -56,7 +56,7 @@ def _call_llm(prompt: str) -> str:
                         "remediation notes for a non-expert. Use only the facts given."},
             {"role": "user", "content": prompt},
         ],
-        temperature=0.2,
+        temperature=0,
         max_tokens=180,
     )
     return resp.choices[0].message.content.strip()
