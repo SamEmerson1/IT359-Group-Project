@@ -124,3 +124,59 @@ switch and it scores **100/100 (Strong)**. That before/after is the demo.
 Authorized class exercise. The target app is ours and runs only inside our own
 lab (local machine / course VMs). Nothing here is ever pointed at a system we
 don't own.
+
+---
+
+## Lab notes (for the team)
+
+### How the pieces fit (the story)
+
+We run this as a small *authorized* penetration test, not just a program on one machine:
+
+- **Windows 11 VM** runs the target app — the "victim" with the weak login.
+- **Kali VM** runs the auditor — the "tester" reaching the target over the network.
+- **pfSense** is the network boundary between them.
+
+That separation is deliberate: it mirrors a real remote assessment, where the tester only sees what is exposed over the network.
+
+**Black-box vs white-box (why the storage check says "not reachable"):**
+
+- *Black-box* = testing from outside with no inside access — what the Kali box does. From there you cannot read the target's files, so the auditor cannot open `users.db` to inspect how passwords are stored. That is correct and expected, not a bug.
+- *White-box* = testing with host access. Run directly on the Windows box (as the app's owner), the same check would read `users.db` and confirm passwords are stored as unsalted **MD5** — a critical flaw. It is possible (`python -m auditor.checks.storage` on the Windows box, or pass a copied DB with `--db`), but we keep the remote run black-box for an authentic story.
+
+So the remote score is **31/100**; password storage is simply out of scope for a remote test.
+
+### Heads-up: in secure mode, browser login only works on localhost
+
+In secure mode the session cookie is marked `Secure`, which browsers only send over HTTPS — with one exception: `localhost` / `127.0.0.1`. We serve plain HTTP, so:
+
+- Browser login + MFA **works on the Windows box at `http://127.0.0.1:5000`**.
+- Over the **LAN IP (192.168.1.x) the browser drops the Secure cookie**, so the MFA step loses its session and bounces back to the login page. This is the Secure flag working correctly, not a bug.
+- The **auditor from Kali is unaffected** (it does not rely on the browser keeping that cookie), so the 100/100 hardened scan is valid.
+
+For videos: do the secure-mode browser demo on `127.0.0.1` on the Windows box, and run the scan from Kali.
+
+### Commands cheat-sheet
+
+**Windows (target app):**
+
+```powershell
+py target_app\app.py
+# flip to hardened:
+(Get-Content target_app\app.py) -replace 'SECURE_MODE = False','SECURE_MODE = True' | Set-Content target_app\app.py
+# flip back to vulnerable:
+(Get-Content target_app\app.py) -replace 'SECURE_MODE = True','SECURE_MODE = False' | Set-Content target_app\app.py
+# one-time firewall rule (admin PowerShell):
+New-NetFirewallRule -DisplayName "IT359 lab 5000" -Direction Inbound -Protocol TCP -LocalPort 5000 -Action Allow
+```
+
+**Kali (auditor):**
+
+```bash
+source .venv/bin/activate        # each new terminal
+python -m auditor.main --target http://192.168.1.101:5000 --db ./users.db --out report.html
+# confirm the AI key is set:
+python -c "from openai import OpenAI; print(OpenAI().chat.completions.create(model='gpt-4o-mini',messages=[{'role':'user','content':'say ok'}]).choices[0].message.content)"
+```
+
+Replace `192.168.1.101` with the Windows VM's current IP (`ipconfig`).
